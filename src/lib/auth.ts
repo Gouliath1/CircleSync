@@ -1,4 +1,5 @@
 import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 import { db } from "./db";
 import { users } from "./db/schema";
 import { eq } from "drizzle-orm";
@@ -37,4 +38,11 @@ export async function createSession(userId: number) {
 export async function clearSession() {
   const store = await cookies();
   store.delete(COOKIE);
+}
+
+export async function requireAdmin() {
+  const user = await getSession();
+  if (!user) redirect("/join");
+  if (!user.isAdmin) redirect("/");
+  return user;
 }
