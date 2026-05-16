@@ -9,6 +9,9 @@ interface Props {
 }
 
 export default async function JoinPage({ searchParams }: Props) {
+  const [existing] = await db.select({ id: users.id }).from(users).limit(1);
+  if (!existing) redirect("/setup");
+
   const { token } = await searchParams;
 
   if (token) {
